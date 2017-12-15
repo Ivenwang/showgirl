@@ -47,7 +47,7 @@ func (x *ERecommendTypeDef) UnmarshalJSON(data []byte) error {
 	*x = ERecommendTypeDef(value)
 	return nil
 }
-func (ERecommendTypeDef) EnumDescriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
+func (ERecommendTypeDef) EnumDescriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
 
 // 推荐系统协议
 type STImageListInfo struct {
@@ -60,7 +60,7 @@ type STImageListInfo struct {
 func (m *STImageListInfo) Reset()                    { *m = STImageListInfo{} }
 func (m *STImageListInfo) String() string            { return proto.CompactTextString(m) }
 func (*STImageListInfo) ProtoMessage()               {}
-func (*STImageListInfo) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
+func (*STImageListInfo) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
 
 func (m *STImageListInfo) GetAlbumName() string {
 	if m != nil && m.AlbumName != nil {
@@ -93,7 +93,7 @@ type STQueryRecommendListReq struct {
 func (m *STQueryRecommendListReq) Reset()                    { *m = STQueryRecommendListReq{} }
 func (m *STQueryRecommendListReq) String() string            { return proto.CompactTextString(m) }
 func (*STQueryRecommendListReq) ProtoMessage()               {}
-func (*STQueryRecommendListReq) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{1} }
+func (*STQueryRecommendListReq) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{1} }
 
 func (m *STQueryRecommendListReq) GetQueryStartPos() int32 {
 	if m != nil && m.QueryStartPos != nil {
@@ -120,7 +120,7 @@ type STQueryRecommendListRsp struct {
 func (m *STQueryRecommendListRsp) Reset()                    { *m = STQueryRecommendListRsp{} }
 func (m *STQueryRecommendListRsp) String() string            { return proto.CompactTextString(m) }
 func (*STQueryRecommendListRsp) ProtoMessage()               {}
-func (*STQueryRecommendListRsp) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{2} }
+func (*STQueryRecommendListRsp) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{2} }
 
 func (m *STQueryRecommendListRsp) GetBannerList() []*STImageListInfo {
 	if m != nil {
@@ -152,7 +152,7 @@ type STStyleImageListReq struct {
 func (m *STStyleImageListReq) Reset()                    { *m = STStyleImageListReq{} }
 func (m *STStyleImageListReq) String() string            { return proto.CompactTextString(m) }
 func (*STStyleImageListReq) ProtoMessage()               {}
-func (*STStyleImageListReq) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{3} }
+func (*STStyleImageListReq) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{3} }
 
 func (m *STStyleImageListReq) GetStyleID() int32 {
 	if m != nil && m.StyleID != nil {
@@ -170,7 +170,7 @@ type STStyleImageListRsp struct {
 func (m *STStyleImageListRsp) Reset()                    { *m = STStyleImageListRsp{} }
 func (m *STStyleImageListRsp) String() string            { return proto.CompactTextString(m) }
 func (*STStyleImageListRsp) ProtoMessage()               {}
-func (*STStyleImageListRsp) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{4} }
+func (*STStyleImageListRsp) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{4} }
 
 func (m *STStyleImageListRsp) GetUrls() []string {
 	if m != nil {
@@ -188,9 +188,9 @@ func init() {
 	proto.RegisterEnum("client.ERecommendTypeDef", ERecommendTypeDef_name, ERecommendTypeDef_value)
 }
 
-func init() { proto.RegisterFile("RecommendSvr.proto", fileDescriptor2) }
+func init() { proto.RegisterFile("RecommendSvr.proto", fileDescriptor3) }
 
-var fileDescriptor2 = []byte{
+var fileDescriptor3 = []byte{
 	// 305 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0xd1, 0x4a, 0xf3, 0x40,
 	0x10, 0x85, 0xd9, 0xe4, 0xe7, 0xd7, 0x4e, 0xaa, 0x35, 0x53, 0xa4, 0xb9, 0x0c, 0x11, 0x24, 0x28,

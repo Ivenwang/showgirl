@@ -7,6 +7,7 @@ Package client is a generated protocol buffer package.
 It is generated from these files:
 	AccountSvr.proto
 	CommonProtocol.proto
+	PaySvr.proto
 	RecommendSvr.proto
 
 It has these top-level messages:
@@ -20,6 +21,8 @@ It has these top-level messages:
 	CommonReq
 	CommonRsp
 	CommonClientRsp
+	STCreateTransactionReq
+	STCreateTransactionRsp
 	STImageListInfo
 	STQueryRecommendListReq
 	STQueryRecommendListRsp

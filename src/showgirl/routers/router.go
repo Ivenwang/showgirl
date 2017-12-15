@@ -22,6 +22,9 @@ func init() {
 		
 			beego.Router("/account/getmyinfo", &controllers.AccountController{}, "post:GetMyInfo")
 		
+		case "Pay":
+			beego.Router("/pay/createtransaction", &controllers.PayController{}, "post:CreateTransaction")
+		
 		case "Recommend":
 			beego.Router("/recommend/queryrecommendlist", &controllers.RecommendController{}, "post:QueryRecommendList")
 		
@@ -33,6 +36,8 @@ func init() {
 		
 			beego.Router("/v1.0/account/getmyinfo", &controllers.GoFrontController{}, "post:Account_GetMyInfo")
 		
+			beego.Router("/v1.0/pay/createtransaction", &controllers.GoFrontController{}, "post:Pay_CreateTransaction")
+		
 			beego.Router("/v1.0/recommend/queryrecommendlist", &controllers.GoFrontController{}, "post:Recommend_QueryRecommendList")
 		
 			beego.Router("/v1.0/recommend/styleimagelist", &controllers.GoFrontController{}, "post:Recommend_StyleImageList")
@@ -42,6 +47,8 @@ func init() {
 			beego.Router("/op/account/thirdpartywxlogin", &controllers.OpGatewayController{}, "post:Account_ThirdPartyWXLogin")
 		
 			beego.Router("/op/account/getmyinfo", &controllers.OpGatewayController{}, "post:Account_GetMyInfo")
+		
+			beego.Router("/op/pay/createtransaction", &controllers.OpGatewayController{}, "post:Pay_CreateTransaction")
 		
 			beego.Router("/op/recommend/queryrecommendlist", &controllers.OpGatewayController{}, "post:Recommend_QueryRecommendList")
 		

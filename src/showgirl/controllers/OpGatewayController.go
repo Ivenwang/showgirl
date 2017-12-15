@@ -200,6 +200,25 @@ func (this *OpGatewayController) Account_GetMyInfo() {
 	this.fillResponce("GetMyInfo", clientRspPB, rspHdr, rspBody, err, flowid)
 }
 
+func (this *OpGatewayController) Pay_CreateTransaction() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("CreateTransaction", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STCreateTransactionReq{}
+	userTrustInfo := this.parseRequest("CreateTransaction", clientRspPB, reqPB, &flowid)
+	
+	c := client.PayClient{}
+	rspHdr, rspBody, err := c.CreateTransaction(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("CreateTransaction", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
 func (this *OpGatewayController) Recommend_QueryRecommendList() {
 	clientRspPB := newOpGatewayRsp()
 	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
