@@ -1,0 +1,27 @@
+httpport = 8000
+
+module = Account,Recommend,GoFront,OpGateway
+
+[log]
+;DEBUG
+;INFO
+;WARN
+;FATAL
+level = DEBUG
+
+[DefaultSvr]
+url = http://127.0.0.1:8000
+
+[CommonConfig]
+;依赖微服务环境
+DepEnv = dev
+
+[Mysql]
+MysqlConn = root:WangChen1013!@tcp(127.0.0.1:3306)/ShowGirl?charset=utf8mb4
+MysqlConnSlave = root:WangChen1013!@tcp(127.0.0.1:3306)/ShowGirl?charset=utf8mb4
+
+[zhanweifu]
+name=value
+
+
+

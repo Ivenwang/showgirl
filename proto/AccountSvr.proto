@@ -1,0 +1,34 @@
+syntax = "proto2";
+package client;
+
+
+//微信登录
+message STThirdPartyWXLoginReq //Public|NoCookie
+{
+	required string code = 1; //微信登录的code
+}
+
+message STThirdPartyWXLoginRsp
+{
+	required string UserKey = 1; //用户cookie
+	optional string UserId = 2; //用户id
+	optional string NickName = 3; //昵称
+	optional string Url = 4; //头像url
+	optional sint64 LastTime = 5; //最近登录时间,单位unix时间戳
+	optional sint32 ChargeNum = 6; //充值金额，单位分
+}
+
+
+//获取自己的信息
+message STGetMyInfoReq //Public
+{
+}
+
+message STGetMyInfoRsp
+{
+	optional string UserId = 1; //用户id
+	optional string NickName = 2; //昵称
+	optional string Url = 3; //头像url
+	optional sint64 LastTime = 4; //最近登录时间,单位unix时间戳
+	optional sint32 ChargeNum = 5; //充值级别，0为未充值过
+}

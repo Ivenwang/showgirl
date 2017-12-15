@@ -1,0 +1,26 @@
+syntax = "proto2";
+package client;
+
+//创建微信支付订单请求
+message STCreateTransactionReq //Public
+{
+    optional string GoodsDesc = 1; //商品描述,商品简单描述,该字段须严格按照规范传递,具体请见参数规定(https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=4_2)
+    optional string GoodsDetail = 2; //商品详情
+    optional sint32 FeeAmount = 3; //订单金额：RMB分
+    optional string OpenID = 4; //wxopenid
+}
+
+//创建微信支付订单响应
+message STCreateTransactionRsp //Public
+{
+    optional string AppId = 1; //小程序id
+    optional string PartnerId = 2; //微信商户号
+    optional string DeviceInfo = 3; //设备号
+    optional string NonceStr = 4; //随机字符串，用于调起支付验证
+    optional string Sign = 5; //支付签名
+    optional string ResultCode = 6; //微信支付结果
+    optional string ErrCode = 7; //微信错误信息
+    optional string ErrCodeDes = 8; //微信错误返回的信息描述
+    optional string TradeType = 9; //交易类型
+    optional string PrepayID = 10; //订单id
+}

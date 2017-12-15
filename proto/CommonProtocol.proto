@@ -1,0 +1,73 @@
+syntax = "proto2";
+package client;
+
+//可信字段
+message STUserTrustInfo
+{
+	optional string UserID = 1; //用户id
+	optional string Url = 2; 	//用户头像
+	optional string Name = 3;   //用户昵称
+	optional sint64 FlowId = 4; //请求flow号
+}
+
+message STCookieInfo
+{
+	optional STUserTrustInfo UserTrustInfo = 1; //用户Trust信息
+	optional sint64 		 CurTime = 2;		//cookie创建时间
+}
+
+//回包header
+message STRspHeader
+{
+	required EErrorTypeDef ErrNo = 1; //返回值
+	optional string ErrMsg = 2; //错误信息
+	optional sint64 FlowId = 3; //请求Id
+	optional string ErrDetail = 4; //调试用错误细节
+}
+
+
+message CommonReq
+{
+	required STUserTrustInfo UserTrustInfo = 1; //接口机添加的可信任字段
+	optional bytes ReqInfo = 2; //请求数据
+	
+}
+
+message CommonRsp
+{
+	required STRspHeader RspHeader = 1; //回包header
+	required STUserTrustInfo UserTrustInfo = 2; //接口机添加的可信任字段
+	optional bytes RspInfo = 3; //响应数据
+}
+
+message CommonClientRsp
+{
+	required STRspHeader RspHeader = 1; //回包header
+	optional string RspJson = 2; //响应数据
+}
+
+
+
+enum EErrorTypeDef {
+	RESULT_OK = 200; //成功
+	RESULT_NOT_IMPLEMENTED = 501; //未实现
+	CHECK_CONTENT_ERROR = 1000; //检查content失败
+	CHECK_COOKIE_ERROR = 1010; //校验cookie失败
+	SYS_INTERNAL_ERROR = 1020; //系统内部错误
+	PROGRAM_EXCEPTION_ERROR = 1021; //程序异常
+	RPC_FAILED_ERROR = 1080; //远程调用失败
+	RPC_INTERFACE_ABNORMAL = 1081; //远程调用封包解包失败
+	RPC_CLIENT_TIMEOUT = 1082; //远程调用客户端超时
+	GENERATE_CONTENT_ERROR = 1090; //PB生成JSON失败
+	CHECK_PARAM_ERROR = 1100; //校验参数错误
+	CHECK_PERMISSION_ERROR = 1110; //没有权限
+}
+
+enum EFindAccountDef {
+	FOUND_ACCOUNT_SUCCESS = 0; //查找账号成功
+	NOT_FOUND_ACCOUNT = 1; //没有找到账号
+	ACCOUNT_SYSTEM_ERROR = 2; //系统错误
+	ACCOUNT_PARAM_ERROR = 3; //参数错误
+}
+
+

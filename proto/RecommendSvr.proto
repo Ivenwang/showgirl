@@ -1,0 +1,45 @@
+syntax = "proto2";
+package client;
+
+//推荐系统协议
+message STImageListInfo
+{
+	optional string AlbumName = 1; //相册名称
+	optional sint32 StyleID = 2; //相册ID
+	optional string Url = 3; //相册封面
+}
+
+//查询推荐列表请求
+message STQueryRecommendListReq //Public|NoCookie
+{
+	optional sint32 QueryStartPos = 1; //查询列表的开始位置
+	optional sint32 QueryNumber = 2; //查询数量
+}
+
+//查询推荐列表响应
+message STQueryRecommendListRsp
+{
+	repeated STImageListInfo BannerList = 1; //banner套图
+	repeated STImageListInfo NewImageList = 2; //最新套图列表
+	repeated STImageListInfo RecommendImageList = 3; //推荐套图列表
+}
+
+//查询相册id对应的图片信息请求
+message STStyleImageListReq //Public|NoCookie
+{
+	required sint32 StyleID = 1; //相册ID
+}
+
+//查询相册id对应的图片信息响应
+message STStyleImageListRsp
+{
+	repeated string Urls = 1; //图片地址列表
+}
+
+enum ERecommendTypeDef {
+	BANNER_TYPE = 1; //banner位
+	NEW_TYPE = 2; //最新位
+	RECOMMEND_TYPE = 3; //推荐位
+}
+
+
