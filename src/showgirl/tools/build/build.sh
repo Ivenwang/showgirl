@@ -77,6 +77,6 @@ cp -r static $output/
 cp -r views $output/
 
 cd $output
-tar zcf tiantian_release.tgz --exclude tiantian_release.tgz .
+tar zcf showgirl_release.tgz --exclude showgirl_release.tgz .
 
 echo "build success"

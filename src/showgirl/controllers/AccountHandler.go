@@ -34,12 +34,16 @@ func HandleThirdPartyWXLogin(hdr *client.STUserTrustInfo, req *client.STThirdPar
 			break
 		}
 
-		if len(AccessToken) <= 0 || len(WXOpenID) <= 0 || len(WxUnionID) <= 0 {
-			utils.Warn(hdr.GetFlowId(), "HandleThirdPartyWXLogin GetAccessTokenByWxKey error, code = %s, AccessToken = %s, WxUnionId = %s",
-				req.GetCode(), AccessToken, WxUnionID)
-			rspHeader.ErrNo = client.EErrorTypeDef_CHECK_PARAM_ERROR.Enum()
-			rspHeader.ErrMsg = proto.String("微信登录失败")
-			break
+		// if len(AccessToken) <= 0 || len(WXOpenID) <= 0 || len(WxUnionID) <= 0 {
+		// 	utils.Warn(hdr.GetFlowId(), "HandleThirdPartyWXLogin GetAccessTokenByWxKey error, code = %s, AccessToken = %s, WxUnionId = %s",
+		// 		req.GetCode(), AccessToken, WxUnionID)
+		// 	rspHeader.ErrNo = client.EErrorTypeDef_CHECK_PARAM_ERROR.Enum()
+		// 	rspHeader.ErrMsg = proto.String("微信登录失败")
+		// 	break
+		// }
+
+		if len(WxUnionID) <= 0 {
+			WxUnionID = WXOpenID
 		}
 
 		stUserBaseInfo, FindResult := Account.QueryAccountCorrectByUnionID(WxUnionID, hdr.GetFlowId())
@@ -58,7 +62,7 @@ func HandleThirdPartyWXLogin(hdr *client.STUserTrustInfo, req *client.STThirdPar
 			len(stUserBaseInfo.WxUnionID) <= 0 {
 
 			//查询用户微信userinfo，插入db
-			stUserBaseInfo, err = Account.QueryAndSetUserWxInfo(AccessToken, WXOpenID, WxUnionID, hdr.GetFlowId())
+			stUserBaseInfo, err = Account.QueryAndSetUserWxInfo(WXOpenID, WxUnionID, hdr.GetFlowId())
 			if err != nil {
 				utils.Warn(hdr.GetFlowId(), "HandleThirdPartyWXLogin QueryAndSetUserWxInfo error, access_token = %s, openid = %s, error = %s", AccessToken, WXOpenID, err.Error())
 				rspHeader.ErrNo = client.EErrorTypeDef_SYS_INTERNAL_ERROR.Enum()
