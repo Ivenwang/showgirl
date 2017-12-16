@@ -37,7 +37,7 @@ func QueryAccountCorrectByUnionID(WxUnionID string, flowid int64) (UserBaseInfo,
 	var DBChargeNum []int32
 	var DBLastTime []int64
 
-	sSQL := fmt.Sprintf("select WxOpenID,WxUnionID,NickName,UserUrl,ChargeNum,unix_timestamp(UpdateTime) from ShowGirlAccountInfo where UserID = %q",
+	sSQL := fmt.Sprintf("select WxOpenID,WxUnionID,NickName,UserUrl,ChargeNum,unix_timestamp(UpdateTime) from ShowGirlAccountInfo where WxUnionID = %q",
 		WxUnionID)
 
 	num, err := o.Raw(sSQL).QueryRows(&DBWxOpenID, &DBWxUnionID, &DBNickName, &DBUserURL,
