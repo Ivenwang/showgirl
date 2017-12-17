@@ -34,16 +34,12 @@ func HandleThirdPartyWXLogin(hdr *client.STUserTrustInfo, req *client.STThirdPar
 			break
 		}
 
-		// if len(AccessToken) <= 0 || len(WXOpenID) <= 0 || len(WxUnionID) <= 0 {
-		// 	utils.Warn(hdr.GetFlowId(), "HandleThirdPartyWXLogin GetAccessTokenByWxKey error, code = %s, AccessToken = %s, WxUnionId = %s",
-		// 		req.GetCode(), AccessToken, WxUnionID)
-		// 	rspHeader.ErrNo = client.EErrorTypeDef_CHECK_PARAM_ERROR.Enum()
-		// 	rspHeader.ErrMsg = proto.String("微信登录失败")
-		// 	break
-		// }
-
-		if len(WxUnionID) <= 0 {
-			WxUnionID = WXOpenID
+		if len(AccessToken) <= 0 || len(WXOpenID) <= 0 || len(WxUnionID) <= 0 {
+			utils.Warn(hdr.GetFlowId(), "HandleThirdPartyWXLogin GetAccessTokenByWxKey error, code = %s, AccessToken = %s, WxUnionId = %s",
+				req.GetCode(), AccessToken, WxUnionID)
+			rspHeader.ErrNo = client.EErrorTypeDef_CHECK_PARAM_ERROR.Enum()
+			rspHeader.ErrMsg = proto.String("校验id错误，请在微信开放平台绑定应用")
+			break
 		}
 
 		stUserBaseInfo, FindResult := Account.QueryAccountCorrectByUnionID(WxUnionID, hdr.GetFlowId())
@@ -98,6 +94,7 @@ func HandleThirdPartyWXLogin(hdr *client.STUserTrustInfo, req *client.STThirdPar
 		stThirdPartyWXLoginRsp.Url = proto.String(stUserBaseInfo.URL)
 		stThirdPartyWXLoginRsp.LastTime = proto.Int64(stUserBaseInfo.LastTime)
 		stThirdPartyWXLoginRsp.ChargeNum = proto.Int32(stUserBaseInfo.Charge)
+		stThirdPartyWXLoginRsp.WxOpenID = proto.String(WXOpenID)
 
 		pThirdPartyWXLoginRsp = stThirdPartyWXLoginRsp
 
