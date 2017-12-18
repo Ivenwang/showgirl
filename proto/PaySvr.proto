@@ -14,7 +14,7 @@ message STCreateTransactionReq //Public
 message STCreateTransactionRsp //Public
 {
     optional string AppId = 1; //小程序id
-    optional string PartnerId = 2; //微信商户号
+    optional string MchID = 2; //微信商户号
     optional string DeviceInfo = 3; //设备号
     optional string NonceStr = 4; //随机字符串，用于调起支付验证
     optional string Sign = 5; //支付签名
