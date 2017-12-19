@@ -30,7 +30,7 @@ func HandleCreateTransaction(hdr *client.STUserTrustInfo, req *client.STCreateTr
 			break
 		}
 		var err error
-		stCreateTransactionRsp, err = Pay.CreateTransaction("", req.GetFeeAmount(), req.GetOpenID(), hdr.GetFlowId())
+		stCreateTransactionRsp, err = Pay.CreateTransaction(hdr.GetRealIP(), req.GetFeeAmount(), req.GetOpenID(), hdr.GetFlowId())
 		if err != nil {
 			utils.Warn(hdr.GetFlowId(), "HandleCreateTransaction CreateTransaction error, req = %s, err = %s", req.String(), err.Error())
 			rspHeader.ErrNo = client.EErrorTypeDef_SYS_INTERNAL_ERROR.Enum()

@@ -8,6 +8,7 @@ message STUserTrustInfo
 	optional string Url = 2; 	//用户头像
 	optional string Name = 3;   //用户昵称
 	optional sint64 FlowId = 4; //请求flow号
+	optional string RealIP = 5; //客户端ip地址
 }
 
 message STCookieInfo

@@ -6,7 +6,10 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"showgirl/client"
+	"showgirl/models/Account"
+	"showgirl/models/mysql"
 	"showgirl/models/utils"
 	"strconv"
 	"strings"
@@ -16,7 +19,7 @@ import (
 )
 
 const WXAppID = "wx67cb0c8656d9400c"
-const WXMchID = "xxx"
+const WXMchID = "1462801602"
 const NotifyURL = "https://grassua.site/callpack/pay"
 const PaySignKey = "xxx"
 const WxPayURL = "https://api.mch.weixin.qq.com/pay/unifiedorder"
@@ -59,6 +62,36 @@ type WXPayCreateOrderRsp struct {
 	ErrCodeDes string `xml:"err_code_des"` //错误返回的信息描述
 	TradeType  string `xml:"trade_type"`   //交易类型
 	PrepayID   string `xml:"prepay_id"`    //预支付交易会话标识
+}
+
+//WXPayNotifyInfo 微信支付通知
+type WXPayNotifyInfo struct {
+	ReturnCode         string `xml:"return_code"`          //返回码，通讯标识
+	ReturnMsg          string `xml:"return_msg"`           //通讯错误码
+	AppID              string `xml:"appid"`                //小程序id
+	MchID              string `xml:"mch_id"`               //商户号
+	DeviceInfo         string `xml:"device_info"`          //设备号
+	NonceStr           string `xml:"nonce_str"`            //随机字符串
+	Sign               string `xml:"sign"`                 //签名
+	SignType           string `xml:"sign_type"`            //签名类型
+	ResultCode         string `xml:"result_code"`          //业务结果
+	ErrCode            string `xml:"err_code"`             //错误代码
+	ErrCodeDes         string `xml:"err_code_des"`         //错误返回的信息描述
+	OpenID             string `xml:"openid"`               //用户标识
+	IsSubscribe        string `xml:"is_subscribe"`         //是否关注公众号
+	TradeType          string `xml:"trade_type"`           //交易类型
+	BankType           string `xml:"bank_type"`            //银行类型
+	TotalFee           int32  `xml:"total_fee"`            //总金额，单位分
+	SettleMentTotalFee int32  `xml:"settlement_total_fee"` //应结订单金额，单位分
+	FeeType            string `xml:"fee_type"`             //货币类型
+	CashFee            int32  `xml:"cash_fee"`             //现金支付金额
+	CashFeeType        string `xml:"cash_fee_type"`        //现金支付货币类型
+	CouponFee          int32  `xml:"coupon_fee"`           //代金券金额
+	CouponCount        int32  `xml:"coupon_count"`         //代金券数量
+	TransactionID      string `xml:"transaction_id"`       //微信支付订单号
+	OutTradeNo         string `xml:"out_trade_no"`         //商户订单号
+	Attach             string `xml:"attach"`               //商家数据包
+	TimeEnd            string `xml:"time_end"`             //支付完成时间
 }
 
 //CreateTransaction 创建订单
@@ -202,5 +235,90 @@ func GenSignByPay(stCreateOrder WXPayCreateOrderReq, flowid int64) string {
 	cipherStr := md5Ctx.Sum(nil)
 
 	return strings.ToUpper(hex.EncodeToString(cipherStr))
+
+}
+
+//UpdateUserChargeNum 更新用户充值金额
+func UpdateUserChargeNum(WxOpenID string, TotalFee int32) error {
+
+	//查询用户unionid
+	WxUnionID := Account.QueryWXUnionIDByWXOpenID(WxOpenID, int64(0))
+	if len(WxUnionID) <= 0 {
+		return errors.New("query account error")
+	}
+
+	//新建mysql实例
+	o := mysql.NewShowgirlOrm()
+
+	sSQL := fmt.Sprintf("update ShowGirlAccountInfo set ChargeNum = ChargeNum + %d where WxUnionID = %q",
+		TotalFee, WxUnionID)
+	_, err := o.Raw(sSQL).Exec()
+	if err != nil {
+		utils.Warn(0, "UpdateUserChargeNum update account error, sql = %s, err = %s", sSQL, err.Error())
+		return err
+	}
+
+	utils.Debug(0, "UpdateUserChargeNum debug, sql = %s, WxOpenID = %s, WxUnionID = %s, TotalFee = %d",
+		sSQL, WxOpenID, WxUnionID, TotalFee)
+
+	return nil
+
+}
+
+//InsertPayFlow 写入充值流水
+func InsertPayFlow(stPayNotifyInfo WXPayNotifyInfo) error {
+
+	//新建mysql实例
+	o := mysql.NewShowgirlOrm()
+
+	sSQL := ConstructInsertPayFlowSQL(stPayNotifyInfo)
+	if len(sSQL) <= 0 {
+		return errors.New("construct sql error")
+	}
+	_, err := o.Raw(sSQL).Exec()
+	if err != nil {
+		utils.Warn(0, "InsertPayFlow insert flow error, sql = %s, err = %s", sSQL, err.Error())
+		return err
+	}
+
+	utils.Debug(0, "InsertPayFlow debug, sql = %s", sSQL)
+	return nil
+}
+
+//ConstructInsertPayFlowSQL 构建写入充值流水SQL
+func ConstructInsertPayFlowSQL(stPayNotifyInfo WXPayNotifyInfo) string {
+
+	return fmt.Sprintf("insert into PayNotifyFlow(Id,ReturnCode,ReturnMsg,AppID,"+
+		"MchID,DeviceInfo,NonceStr,Sign,SignType,ResultCode,ErrCode,ErrCodeDes,OpenID,"+
+		"IsSubscribe,TradeType,BankType,TotalFee,SettleMentTotalFee,FeeType,CashFee,"+
+		"CashFeeType,CouponFee,CouponCount,TransactionID,OutTradeNo,Attach,TimeEnd,"+
+		"CreateTime,UpdateTime) values(null,%q,%q,%q,%q,%q, %q,%q,%q,%q,%q,"+
+		"%q,%q,%q,%q,%q, %d,%d,%q,%d,%q, %d,%d,%q,%q,%q, %q,Now(),null)",
+		stPayNotifyInfo.ReturnCode,
+		stPayNotifyInfo.ReturnMsg,
+		stPayNotifyInfo.AppID,
+		stPayNotifyInfo.MchID,
+		stPayNotifyInfo.DeviceInfo,
+		stPayNotifyInfo.NonceStr,
+		stPayNotifyInfo.Sign,
+		stPayNotifyInfo.SignType,
+		stPayNotifyInfo.ResultCode,
+		stPayNotifyInfo.ErrCode,
+		stPayNotifyInfo.ErrCodeDes,
+		stPayNotifyInfo.OpenID,
+		stPayNotifyInfo.IsSubscribe,
+		stPayNotifyInfo.TradeType,
+		stPayNotifyInfo.BankType,
+		stPayNotifyInfo.TotalFee,
+		stPayNotifyInfo.SettleMentTotalFee,
+		stPayNotifyInfo.FeeType,
+		stPayNotifyInfo.CashFee,
+		stPayNotifyInfo.CashFeeType,
+		stPayNotifyInfo.CouponFee,
+		stPayNotifyInfo.CouponCount,
+		stPayNotifyInfo.TransactionID,
+		stPayNotifyInfo.OutTradeNo,
+		stPayNotifyInfo.Attach,
+		stPayNotifyInfo.TimeEnd)
 
 }

@@ -140,6 +140,8 @@ func (this *GoFrontController) {{$module}}_{{$v.MethodName}}() {
 		
 		utils.Debug(int64(FlowIdHeader), "GoFront Transmit {{$v.MethodName}} TrustInfo: %s | reqPB: %s | reqJson: %s", 
 			TrustInfo.String(), reqPB.String(), body)
+		
+		TrustInfo.RealIP = proto.String(this.Ctx.Input.Header("x-real-ip"))
 
 		c :=  {{$.pkg}}.{{$module}}Client{}
 		rspHdr, rspBody, err := c.{{$v.MethodName}}(TrustInfo, reqPB, header)

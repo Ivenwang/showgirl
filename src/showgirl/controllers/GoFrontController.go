@@ -102,6 +102,8 @@ func (this *GoFrontController) Account_ThirdPartyWXLogin() {
 		
 		utils.Debug(int64(FlowIdHeader), "GoFront Transmit ThirdPartyWXLogin TrustInfo: %s | reqPB: %s | reqJson: %s", 
 			TrustInfo.String(), reqPB.String(), body)
+		
+		TrustInfo.RealIP = proto.String(this.Ctx.Input.Header("x-real-ip"))
 
 		c :=  client.AccountClient{}
 		rspHdr, rspBody, err := c.ThirdPartyWXLogin(TrustInfo, reqPB, header)
@@ -240,6 +242,8 @@ func (this *GoFrontController) Account_GetMyInfo() {
 		
 		utils.Debug(int64(FlowIdHeader), "GoFront Transmit GetMyInfo TrustInfo: %s | reqPB: %s | reqJson: %s", 
 			TrustInfo.String(), reqPB.String(), body)
+		
+		TrustInfo.RealIP = proto.String(this.Ctx.Input.Header("x-real-ip"))
 
 		c :=  client.AccountClient{}
 		rspHdr, rspBody, err := c.GetMyInfo(TrustInfo, reqPB, header)
@@ -380,6 +384,8 @@ func (this *GoFrontController) Pay_CreateTransaction() {
 		
 		utils.Debug(int64(FlowIdHeader), "GoFront Transmit CreateTransaction TrustInfo: %s | reqPB: %s | reqJson: %s", 
 			TrustInfo.String(), reqPB.String(), body)
+		
+		TrustInfo.RealIP = proto.String(this.Ctx.Input.Header("x-real-ip"))
 
 		c :=  client.PayClient{}
 		rspHdr, rspBody, err := c.CreateTransaction(TrustInfo, reqPB, header)
@@ -490,6 +496,8 @@ func (this *GoFrontController) Recommend_QueryRecommendList() {
 		
 		utils.Debug(int64(FlowIdHeader), "GoFront Transmit QueryRecommendList TrustInfo: %s | reqPB: %s | reqJson: %s", 
 			TrustInfo.String(), reqPB.String(), body)
+		
+		TrustInfo.RealIP = proto.String(this.Ctx.Input.Header("x-real-ip"))
 
 		c :=  client.RecommendClient{}
 		rspHdr, rspBody, err := c.QueryRecommendList(TrustInfo, reqPB, header)
@@ -598,6 +606,8 @@ func (this *GoFrontController) Recommend_StyleImageList() {
 		
 		utils.Debug(int64(FlowIdHeader), "GoFront Transmit StyleImageList TrustInfo: %s | reqPB: %s | reqJson: %s", 
 			TrustInfo.String(), reqPB.String(), body)
+		
+		TrustInfo.RealIP = proto.String(this.Ctx.Input.Header("x-real-ip"))
 
 		c :=  client.RecommendClient{}
 		rspHdr, rspBody, err := c.StyleImageList(TrustInfo, reqPB, header)

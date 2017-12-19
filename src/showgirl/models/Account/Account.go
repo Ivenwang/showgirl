@@ -101,3 +101,32 @@ func UpdateLastLoginTime(WXUnionID string, flowid int64) error {
 	return nil
 
 }
+
+//QueryWXUnionIDByWXOpenID 根据微信openid查询unionid
+func QueryWXUnionIDByWXOpenID(WXOpenID string, flowid int64) string {
+
+	//新建mysql实例
+	o := mysql.NewShowgirlOrm()
+
+	var DBWXUnionID []string
+
+	sSQL := fmt.Sprintf("select WxUnionID from ShowGirlAccountInfo where WxOpenID = %q",
+		WXOpenID)
+
+	num, err := o.Raw(sSQL).QueryRows(&DBWXUnionID)
+	if err != nil {
+		utils.Debug(flowid, "QueryWXUnionIDByWXOpenID QueryRows error, sql = %s, err = %s",
+			sSQL, err.Error())
+		return ""
+	}
+	if num <= 0 {
+		utils.Debug(flowid, "QueryWXUnionIDByWXOpenID no found account, sql = %s",
+			sSQL)
+		return ""
+	}
+
+	utils.Debug(flowid, "QueryWXUnionIDByWXOpenID debug, sql = %s, WXOpenID = %s, WXUnionID = %s",
+		sSQL, WXOpenID, DBWXUnionID[0])
+
+	return DBWXUnionID[0]
+}
