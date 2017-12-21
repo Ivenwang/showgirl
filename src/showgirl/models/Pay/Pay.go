@@ -21,7 +21,7 @@ import (
 const WXAppID = "wx67cb0c8656d9400c"
 const WXMchID = "1462801602"
 const NotifyURL = "https://grassua.site/callpack/pay"
-const PaySignKey = "xxx"
+const PaySignKey = "90b682fd775d3cbe9kd205f1f2f7f0f4"
 const WxPayURL = "https://api.mch.weixin.qq.com/pay/unifiedorder"
 
 //WXPayCreateOrderReq 创建支付订单

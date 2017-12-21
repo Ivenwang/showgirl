@@ -1,6 +1,6 @@
 httpport = 8000
 
-module = Account,Recommend,GoFront,OpGateway
+module = Account,Recommend,GoFront,OpGateway,Pay
 
 [log]
 ;DEBUG
