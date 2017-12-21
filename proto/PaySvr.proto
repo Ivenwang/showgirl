@@ -23,4 +23,5 @@ message STCreateTransactionRsp //Public
     optional string ErrCodeDes = 8; //微信错误返回的信息描述
     optional string TradeType = 9; //交易类型
     optional string PrepayID = 10; //订单id
+    optional sint64 CurTime = 11; //服务器当前时间
 }

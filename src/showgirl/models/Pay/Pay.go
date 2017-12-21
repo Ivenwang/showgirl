@@ -159,16 +159,22 @@ func CreateTransaction(IPAddr string, FeeAmount int32, OpenID string, flowid int
 		return stCreateTransaction, errors.New("check rsp error")
 	}
 
+	curTime := time.Now().Unix()
+
 	stCreateTransaction.AppId = proto.String(stCreateOrderRsp.AppID)
 	stCreateTransaction.MchID = proto.String(stCreateOrderRsp.MchID)
 	stCreateTransaction.DeviceInfo = proto.String(stCreateOrderRsp.DeviceInfo)
 	stCreateTransaction.NonceStr = proto.String(stCreateOrderRsp.NonceStr)
-	stCreateTransaction.Sign = proto.String(stCreateOrderRsp.Sign)
+	//stCreateTransaction.Sign = proto.String(stCreateOrderRsp.Sign)
 	stCreateTransaction.ResultCode = proto.String(stCreateOrderRsp.ResultCode)
 	stCreateTransaction.ErrCode = proto.String(stCreateOrderRsp.ErrCode)
 	stCreateTransaction.ErrCodeDes = proto.String(stCreateOrderRsp.ErrCodeDes)
 	stCreateTransaction.TradeType = proto.String(stCreateOrderRsp.TradeType)
 	stCreateTransaction.PrepayID = proto.String(stCreateOrderRsp.PrepayID)
+	stCreateTransaction.CurTime = proto.Int64(curTime)
+
+	stCreateTransaction.Sign = proto.String(GenSignByRequestPayment(stCreateOrderRsp.AppID,
+		strconv.FormatInt(curTime, 10), stCreateOrderRsp.NonceStr, stCreateOrderRsp.PrepayID, "MD5", flowid))
 
 	return stCreateTransaction, nil
 }
@@ -225,6 +231,39 @@ func GenSignByPay(stCreateOrder WXPayCreateOrderReq, flowid int64) string {
 	}
 	if len(stCreateOrder.TradeType) > 0 {
 		stringA += "trade_type=" + stCreateOrder.TradeType + "&"
+	}
+
+	//2、构造stringSignTemp
+	stringSignTemp := stringA + "key=" + PaySignKey
+
+	md5Ctx := md5.New()
+	md5Ctx.Write([]byte(stringSignTemp))
+	cipherStr := md5Ctx.Sum(nil)
+
+	return strings.ToUpper(hex.EncodeToString(cipherStr))
+
+}
+
+//GenSignByRequestPayment 构造下单支付签名
+func GenSignByRequestPayment(appID string, timeStamp string, nonceStr string,
+	PrepayID string, signType string, flowid int64) string {
+
+	//1、构造stringA
+	stringA := ""
+	if len(appID) > 0 {
+		stringA += "appId=" + appID + "&"
+	}
+	if len(nonceStr) > 0 {
+		stringA += "nonceStr=" + nonceStr + "&"
+	}
+	if len(PrepayID) > 0 {
+		stringA += "package=prepay_id=" + PrepayID + "&"
+	}
+	if len(signType) > 0 {
+		stringA += "signType=" + signType + "&"
+	}
+	if len(timeStamp) > 0 {
+		stringA += "timeStamp=" + timeStamp + "&"
 	}
 
 	//2、构造stringSignTemp
