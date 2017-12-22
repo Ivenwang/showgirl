@@ -17,6 +17,8 @@ message STThirdPartyWXLoginRsp
 	optional sint64 LastTime = 5; //最近登录时间,单位unix时间戳
 	optional sint32 ChargeNum = 6; //充值金额，单位分
 	optional string WxOpenID = 7; //微信openid
+	optional sint64 VipDeadLine = 8; //vip过期时间
+	optional bool bVip = 9; //vip当前是否生效
 }
 
 
@@ -32,4 +34,7 @@ message STGetMyInfoRsp
 	optional string Url = 3; //头像url
 	optional sint64 LastTime = 4; //最近登录时间,单位unix时间戳
 	optional sint32 ChargeNum = 5; //充值级别，0为未充值过
+	optional string WxOpenID = 6; //微信openid
+	optional sint64 VipDeadLine = 7; //vip过期时间
+	optional bool bVip = 8; //vip当前是否生效
 }

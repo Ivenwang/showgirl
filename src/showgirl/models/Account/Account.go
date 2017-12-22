@@ -10,12 +10,13 @@ import (
 
 //UserBaseInfo 用户基础数据
 type UserBaseInfo struct {
-	WxOpenID  string `json:"openid"`
-	WxUnionID string `json:"unionid"`
-	NickName  string `json:"nickname"`
-	URL       string `json:"url"`
-	Charge    int32  `json:"charge"`
-	LastTime  int64  `json:"lasttime"`
+	WxOpenID    string `json:"openid"`
+	WxUnionID   string `json:"unionid"`
+	NickName    string `json:"nickname"`
+	URL         string `json:"url"`
+	Charge      int32  `json:"charge"`
+	LastTime    int64  `json:"lasttime"`
+	VipDeadline int64  `json:"deadline"`
 }
 
 //QueryAccountCorrectByUnionID 1表示查询不到账号，2表示DB错误
@@ -36,12 +37,13 @@ func QueryAccountCorrectByUnionID(WxUnionID string, flowid int64) (UserBaseInfo,
 	var DBUserURL []string
 	var DBChargeNum []int32
 	var DBLastTime []int64
+	var DBDeadline []int64
 
-	sSQL := fmt.Sprintf("select WxOpenID,WxUnionID,NickName,UserUrl,ChargeNum,unix_timestamp(UpdateTime) from ShowGirlAccountInfo where WxUnionID = %q",
+	sSQL := fmt.Sprintf("select WxOpenID,WxUnionID,NickName,UserUrl,ChargeNum,unix_timestamp(UpdateTime),VipDeadline from ShowGirlAccountInfo where WxUnionID = %q",
 		WxUnionID)
 
 	num, err := o.Raw(sSQL).QueryRows(&DBWxOpenID, &DBWxUnionID, &DBNickName, &DBUserURL,
-		&DBChargeNum, &DBLastTime)
+		&DBChargeNum, &DBLastTime, &DBDeadline)
 	if err != nil {
 		utils.Debug(flowid, "QueryAccountCorrectByUnionID QueryRows error, sql = %s, err = %s",
 			sSQL, err.Error())
@@ -60,6 +62,7 @@ func QueryAccountCorrectByUnionID(WxUnionID string, flowid int64) (UserBaseInfo,
 	baseInfo.URL = DBUserURL[0]
 	baseInfo.Charge = DBChargeNum[0]
 	baseInfo.LastTime = DBLastTime[0]
+	baseInfo.VipDeadline = DBDeadline[0]
 
 	return baseInfo, client.EFindAccountDef_FOUND_ACCOUNT_SUCCESS
 }
@@ -72,8 +75,8 @@ func RegisterAccount(WxOpenID string, WxUnionID string, NickName string, URL str
 
 	CurTime := time.Now().Unix()
 
-	sSQL := fmt.Sprintf("insert into ShowGirlAccountInfo(Id,WxOpenID,WxUnionID,NickName,UserUrl,ChargeNum,CreateTime,UpdateTime)"+
-		" values(null,%q,%q,%q,%q,%d,%d,Now())", WxOpenID, WxUnionID, NickName, URL, 0, CurTime)
+	sSQL := fmt.Sprintf("insert into ShowGirlAccountInfo(Id,WxOpenID,WxUnionID,NickName,UserUrl,ChargeNum,CreateTime,UpdateTime,VipDeadline)"+
+		" values(null,%q,%q,%q,%q,%d,%d,Now(),%d)", WxOpenID, WxUnionID, NickName, URL, 0, CurTime, 0)
 	_, err := o.Raw(sSQL).Exec()
 	if err != nil {
 		utils.Warn(flowid, "RegisterAccount insert account error, sql = %s, err = %s", sSQL, err.Error())

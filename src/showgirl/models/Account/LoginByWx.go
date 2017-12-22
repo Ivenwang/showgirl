@@ -103,6 +103,7 @@ func QueryAndSetUserWxInfo(WxOpenID string, WxUnionID string, flowid int64) (Use
 	baseInfo.URL = ""
 	baseInfo.Charge = int32(0)
 	baseInfo.LastTime = int64(time.Now().Unix())
+	baseInfo.VipDeadline = int64(0)
 
 	return baseInfo, nil
 }

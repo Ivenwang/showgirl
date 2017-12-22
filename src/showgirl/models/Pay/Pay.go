@@ -289,16 +289,51 @@ func UpdateUserChargeNum(WxOpenID string, TotalFee int32) error {
 	//新建mysql实例
 	o := mysql.NewShowgirlOrm()
 
-	sSQL := fmt.Sprintf("update ShowGirlAccountInfo set ChargeNum = ChargeNum + %d where WxUnionID = %q",
-		TotalFee, WxUnionID)
-	_, err := o.Raw(sSQL).Exec()
+	//查询用户当前VIP有效期
+	var DBDeadline []int64
+
+	sQuerySQL := fmt.Sprintf("select VipDeadline from ShowGirlAccountInfo where WxUnionID = %q",
+		WxUnionID)
+
+	num, err := o.Raw(sQuerySQL).QueryRows(&DBDeadline)
+	if err != nil {
+		utils.Debug(0, "UpdateUserChargeNum QueryRows error, sql = %s, err = %s",
+			sQuerySQL, err.Error())
+		return err
+	} else if num <= 0 {
+		utils.Debug(0, "UpdateUserChargeNum no found account, sql = %s",
+			sQuerySQL)
+		return nil
+	}
+
+	utils.Debug(0, "UpdateUserChargeNum debug, sQuerySQL = %s", sQuerySQL)
+
+	validTime := int64(0)
+	if TotalFee <= 5000 {
+		validTime = 86400 * 30
+	} else {
+		validTime = 86400 * 90
+	}
+
+	curTime := time.Now().Unix()
+	deadline := int64(0)
+	if DBDeadline[0] <= curTime {
+		deadline = curTime + validTime
+	}
+	if DBDeadline[0] > curTime {
+		deadline = DBDeadline[0] + validTime
+	}
+
+	sSQL := fmt.Sprintf("update ShowGirlAccountInfo set ChargeNum = ChargeNum + %d, VipDeadline = %d where WxUnionID = %q",
+		TotalFee, deadline, WxUnionID)
+	_, err = o.Raw(sSQL).Exec()
 	if err != nil {
 		utils.Warn(0, "UpdateUserChargeNum update account error, sql = %s, err = %s", sSQL, err.Error())
 		return err
 	}
 
-	utils.Debug(0, "UpdateUserChargeNum debug, sql = %s, WxOpenID = %s, WxUnionID = %s, TotalFee = %d",
-		sSQL, WxOpenID, WxUnionID, TotalFee)
+	utils.Debug(0, "UpdateUserChargeNum debug, sql = %s, WxOpenID = %s, WxUnionID = %s, TotalFee = %d, deadline = %d",
+		sSQL, WxOpenID, WxUnionID, TotalFee, deadline)
 
 	return nil
 

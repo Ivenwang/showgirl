@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"time"
 	//"github.com/astaxie/beego"
 	"showgirl/client"
 	"showgirl/models/Account"
@@ -95,6 +96,12 @@ func HandleThirdPartyWXLogin(hdr *client.STUserTrustInfo, req *client.STThirdPar
 		stThirdPartyWXLoginRsp.LastTime = proto.Int64(stUserBaseInfo.LastTime)
 		stThirdPartyWXLoginRsp.ChargeNum = proto.Int32(stUserBaseInfo.Charge)
 		stThirdPartyWXLoginRsp.WxOpenID = proto.String(WXOpenID)
+		stThirdPartyWXLoginRsp.VipDeadLine = proto.Int64(stUserBaseInfo.VipDeadline)
+		stThirdPartyWXLoginRsp.BVip = proto.Bool(false)
+
+		if stUserBaseInfo.VipDeadline >= time.Now().Unix() {
+			stThirdPartyWXLoginRsp.BVip = proto.Bool(true)
+		}
 
 		pThirdPartyWXLoginRsp = stThirdPartyWXLoginRsp
 
@@ -145,6 +152,14 @@ func HandleGetMyInfo(hdr *client.STUserTrustInfo, req *client.STGetMyInfoReq) (*
 		stGetMyInfoRsp.Url = proto.String(stUserBaseInfo.URL)
 		stGetMyInfoRsp.LastTime = proto.Int64(stUserBaseInfo.LastTime)
 		stGetMyInfoRsp.ChargeNum = proto.Int32(stUserBaseInfo.Charge)
+
+		stGetMyInfoRsp.WxOpenID = proto.String(stUserBaseInfo.WxOpenID)
+		stGetMyInfoRsp.VipDeadLine = proto.Int64(stUserBaseInfo.VipDeadline)
+		stGetMyInfoRsp.BVip = proto.Bool(false)
+
+		if stUserBaseInfo.VipDeadline >= time.Now().Unix() {
+			stGetMyInfoRsp.BVip = proto.Bool(true)
+		}
 
 		pGetMyInfoRsp = stGetMyInfoRsp
 
