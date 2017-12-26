@@ -1,0 +1,91 @@
+syntax = "proto2";
+import "CommonProtocol.proto";
+package client;
+
+
+//查询资源列表请求
+message STQueryStyleListReq //Public|NoCookie
+{
+	optional sint32 QueryBegin = 1; //开始查询位置
+    optional sint32 QueryNum = 2; //查询条数
+}
+
+message STStyleInfo
+{
+    optional sint32 StyleID = 1;  //相册id
+    optional string StyleName = 2; //相册名称
+    optional ERecommendTypeDef StyleType = 3; //相册类型
+    optional sint64 CreateTime = 4; //资源创建时间
+}
+
+//查询资源列表响应
+message STQueryStyleListRsp
+{
+    repeated STStyleInfo StyleList = 1; //相册列表
+    optional sint32 Total = 2; //数据总条数
+}
+
+//查询相册图片内容请求
+message STQueryResourceListReq //Public|NoCookie
+{
+	optional sint32 StyleID = 1;  //相册id
+}
+
+message STResourceImageInfo
+{
+    optional sint32 ImageID = 1; //图片id
+    optional string Url = 2; //图片url
+}
+
+//查询查询相册图片内容响应
+message STQueryResourceListRsp
+{
+    repeated STResourceImageInfo UrlList = 1; //图片信息列表
+}
+
+//新建相册请求
+message STCreateStyleReq //Public|NoCookie
+{
+	optional string StyleName = 1; //相册名称
+    optional ERecommendTypeDef StyleType = 2; //相册类型
+}
+
+//新建相册响应
+message STCreateStyleRsp
+{
+}
+
+//上传图片请求
+message STUploadImageReq //Public|NoCookie
+{
+    optional sint32 StyleID = 1; //相册id
+	optional string Image = 2; //图片base64编码
+}
+
+//上传图片请求
+message STUploadImageRsp
+{
+}
+
+//删除相册请求
+message STDeleteStyleReq //Public|NoCookie
+{
+	optional sint32 StyleID = 1;  //相册id
+}
+
+//删除相册响应
+message STDeleteStyleRsp
+{
+}
+
+//删除图片资源请求
+message STDeleteResourceReq //Public|NoCookie
+{
+	optional sint32 ImageID = 1; //图片id
+}
+
+//删除图片资源响应
+message STDeleteResourceRsp
+{
+}
+

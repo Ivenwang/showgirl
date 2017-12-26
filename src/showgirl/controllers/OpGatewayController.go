@@ -200,6 +200,120 @@ func (this *OpGatewayController) Account_GetMyInfo() {
 	this.fillResponce("GetMyInfo", clientRspPB, rspHdr, rspBody, err, flowid)
 }
 
+func (this *OpGatewayController) Image_QueryStyleList() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("QueryStyleList", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STQueryStyleListReq{}
+	userTrustInfo := this.parseRequest("QueryStyleList", clientRspPB, reqPB, &flowid)
+	
+	c := client.ImageClient{}
+	rspHdr, rspBody, err := c.QueryStyleList(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("QueryStyleList", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
+func (this *OpGatewayController) Image_QueryResourceList() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("QueryResourceList", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STQueryResourceListReq{}
+	userTrustInfo := this.parseRequest("QueryResourceList", clientRspPB, reqPB, &flowid)
+	
+	c := client.ImageClient{}
+	rspHdr, rspBody, err := c.QueryResourceList(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("QueryResourceList", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
+func (this *OpGatewayController) Image_CreateStyle() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("CreateStyle", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STCreateStyleReq{}
+	userTrustInfo := this.parseRequest("CreateStyle", clientRspPB, reqPB, &flowid)
+	
+	c := client.ImageClient{}
+	rspHdr, rspBody, err := c.CreateStyle(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("CreateStyle", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
+func (this *OpGatewayController) Image_UploadImage() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("UploadImage", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STUploadImageReq{}
+	userTrustInfo := this.parseRequest("UploadImage", clientRspPB, reqPB, &flowid)
+	
+	c := client.ImageClient{}
+	rspHdr, rspBody, err := c.UploadImage(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("UploadImage", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
+func (this *OpGatewayController) Image_DeleteStyle() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("DeleteStyle", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STDeleteStyleReq{}
+	userTrustInfo := this.parseRequest("DeleteStyle", clientRspPB, reqPB, &flowid)
+	
+	c := client.ImageClient{}
+	rspHdr, rspBody, err := c.DeleteStyle(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("DeleteStyle", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
+func (this *OpGatewayController) Image_DeleteResource() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("DeleteResource", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STDeleteResourceReq{}
+	userTrustInfo := this.parseRequest("DeleteResource", clientRspPB, reqPB, &flowid)
+	
+	c := client.ImageClient{}
+	rspHdr, rspBody, err := c.DeleteResource(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("DeleteResource", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
 func (this *OpGatewayController) Pay_CreateTransaction() {
 	clientRspPB := newOpGatewayRsp()
 	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))

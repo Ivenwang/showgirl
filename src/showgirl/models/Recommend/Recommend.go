@@ -39,7 +39,7 @@ func QueryImageListByRecommendCategory(CategoryList []int32, flowid int64) ([]Ca
 	sQuerySQL := "select StyleUrl,StyleShowInfo.Id,StyleShowInfo.ShowName,RecommendCategory" +
 		" from StyleContentInfo,StyleShowInfo where" +
 		" StyleContentInfo.ShowID=StyleShowInfo.Id and" +
-		" StyleContentInfo.RecommendCategory in ("
+		" StyleShowInfo.RecommendCategory in ("
 
 	for idx := range CategoryList {
 		sQuerySQL += strconv.FormatInt(int64(CategoryList[idx]), 10)

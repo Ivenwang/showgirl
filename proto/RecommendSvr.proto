@@ -36,10 +36,4 @@ message STStyleImageListRsp
 	repeated string Urls = 1; //图片地址列表
 }
 
-enum ERecommendTypeDef {
-	BANNER_TYPE = 1; //banner位
-	NEW_TYPE = 2; //最新位
-	RECOMMEND_TYPE = 3; //推荐位
-}
-
 

@@ -22,6 +22,19 @@ func init() {
 		
 			beego.Router("/account/getmyinfo", &controllers.AccountController{}, "post:GetMyInfo")
 		
+		case "Image":
+			beego.Router("/image/querystylelist", &controllers.ImageController{}, "post:QueryStyleList")
+		
+			beego.Router("/image/queryresourcelist", &controllers.ImageController{}, "post:QueryResourceList")
+		
+			beego.Router("/image/createstyle", &controllers.ImageController{}, "post:CreateStyle")
+		
+			beego.Router("/image/uploadimage", &controllers.ImageController{}, "post:UploadImage")
+		
+			beego.Router("/image/deletestyle", &controllers.ImageController{}, "post:DeleteStyle")
+		
+			beego.Router("/image/deleteresource", &controllers.ImageController{}, "post:DeleteResource")
+		
 		case "Pay":
 			beego.Router("/pay/createtransaction", &controllers.PayController{}, "post:CreateTransaction")
 		
@@ -36,6 +49,18 @@ func init() {
 		
 			beego.Router("/v1.0/account/getmyinfo", &controllers.GoFrontController{}, "post:Account_GetMyInfo")
 		
+			beego.Router("/v1.0/image/querystylelist", &controllers.GoFrontController{}, "post:Image_QueryStyleList")
+		
+			beego.Router("/v1.0/image/queryresourcelist", &controllers.GoFrontController{}, "post:Image_QueryResourceList")
+		
+			beego.Router("/v1.0/image/createstyle", &controllers.GoFrontController{}, "post:Image_CreateStyle")
+		
+			beego.Router("/v1.0/image/uploadimage", &controllers.GoFrontController{}, "post:Image_UploadImage")
+		
+			beego.Router("/v1.0/image/deletestyle", &controllers.GoFrontController{}, "post:Image_DeleteStyle")
+		
+			beego.Router("/v1.0/image/deleteresource", &controllers.GoFrontController{}, "post:Image_DeleteResource")
+		
 			beego.Router("/v1.0/pay/createtransaction", &controllers.GoFrontController{}, "post:Pay_CreateTransaction")
 		
 			beego.Router("/v1.0/recommend/queryrecommendlist", &controllers.GoFrontController{}, "post:Recommend_QueryRecommendList")
@@ -47,6 +72,18 @@ func init() {
 			beego.Router("/op/account/thirdpartywxlogin", &controllers.OpGatewayController{}, "post:Account_ThirdPartyWXLogin")
 		
 			beego.Router("/op/account/getmyinfo", &controllers.OpGatewayController{}, "post:Account_GetMyInfo")
+		
+			beego.Router("/op/image/querystylelist", &controllers.OpGatewayController{}, "post:Image_QueryStyleList")
+		
+			beego.Router("/op/image/queryresourcelist", &controllers.OpGatewayController{}, "post:Image_QueryResourceList")
+		
+			beego.Router("/op/image/createstyle", &controllers.OpGatewayController{}, "post:Image_CreateStyle")
+		
+			beego.Router("/op/image/uploadimage", &controllers.OpGatewayController{}, "post:Image_UploadImage")
+		
+			beego.Router("/op/image/deletestyle", &controllers.OpGatewayController{}, "post:Image_DeleteStyle")
+		
+			beego.Router("/op/image/deleteresource", &controllers.OpGatewayController{}, "post:Image_DeleteResource")
 		
 			beego.Router("/op/pay/createtransaction", &controllers.OpGatewayController{}, "post:Pay_CreateTransaction")
 		

@@ -71,4 +71,9 @@ enum EFindAccountDef {
 	ACCOUNT_PARAM_ERROR = 3; //参数错误
 }
 
+enum ERecommendTypeDef {
+	BANNER_TYPE = 1; //banner位
+	NEW_TYPE = 2; //最新位
+	RECOMMEND_TYPE = 3; //推荐位
+}
 

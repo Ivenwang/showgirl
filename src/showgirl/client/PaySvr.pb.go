@@ -24,7 +24,7 @@ type STCreateTransactionReq struct {
 func (m *STCreateTransactionReq) Reset()                    { *m = STCreateTransactionReq{} }
 func (m *STCreateTransactionReq) String() string            { return proto.CompactTextString(m) }
 func (*STCreateTransactionReq) ProtoMessage()               {}
-func (*STCreateTransactionReq) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
+func (*STCreateTransactionReq) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
 
 func (m *STCreateTransactionReq) GetGoodsDesc() string {
 	if m != nil && m.GoodsDesc != nil {
@@ -73,7 +73,7 @@ type STCreateTransactionRsp struct {
 func (m *STCreateTransactionRsp) Reset()                    { *m = STCreateTransactionRsp{} }
 func (m *STCreateTransactionRsp) String() string            { return proto.CompactTextString(m) }
 func (*STCreateTransactionRsp) ProtoMessage()               {}
-func (*STCreateTransactionRsp) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{1} }
+func (*STCreateTransactionRsp) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{1} }
 
 func (m *STCreateTransactionRsp) GetAppId() string {
 	if m != nil && m.AppId != nil {
@@ -157,9 +157,9 @@ func init() {
 	proto.RegisterType((*STCreateTransactionRsp)(nil), "client.STCreateTransactionRsp")
 }
 
-func init() { proto.RegisterFile("PaySvr.proto", fileDescriptor2) }
+func init() { proto.RegisterFile("PaySvr.proto", fileDescriptor3) }
 
-var fileDescriptor2 = []byte{
+var fileDescriptor3 = []byte{
 	// 255 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x8f, 0x41, 0x4e, 0xc3, 0x30,
 	0x10, 0x45, 0x15, 0x68, 0xd2, 0x66, 0xda, 0x02, 0x31, 0x12, 0xf2, 0x32, 0xea, 0x2a, 0x2b, 0xee,
