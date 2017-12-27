@@ -1,6 +1,7 @@
 package Image
 
 import (
+	"encoding/base64"
 	"fmt"
 	"showgirl/client"
 	"showgirl/models/mysql"
@@ -11,6 +12,9 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/golang/protobuf/proto"
 )
+
+const OSS_APP_KEY = "LTAIxR05Gfh0uBtU"
+const OSS_SECRET_KEY = "Z87rVp2Hhn9hrqyZwPvyMHBzXQUCxJ"
 
 //QueryStyleInfoList 查询相册列表
 func QueryStyleInfoList(QueryBegin int32, QueryNum int32, flowid int64) ([]*client.STStyleInfo, int32, error) {
@@ -184,7 +188,7 @@ func UploadAndSetImage(strImage string, StyleID int32, flowid int64) error {
 //UploadImage 上传图片
 func UploadImage(strImage string, flowid int64) (string, error) {
 
-	client, err := oss.New("https://oss-cn-shanghai.aliyuncs.com", "LTAIxR05Gfh0uBtU", "AccessKeySecret")
+	client, err := oss.New("https://oss-cn-shanghai.aliyuncs.com", OSS_APP_KEY, OSS_SECRET_KEY)
 	if err != nil {
 		utils.Warn(flowid, "UploadImage new oss error, err = %s", err.Error())
 		return "", err
@@ -198,9 +202,16 @@ func UploadImage(strImage string, flowid int64) (string, error) {
 
 	objectName := string(utils.Krand(16, utils.KC_RAND_KIND_ALL))
 
+	//图片解base64
+	byteImage, err := base64.StdEncoding.DecodeString(strImage)
+	if err != nil {
+		utils.Warn(flowid, "UploadImage image base64 decode error, err = %s", err.Error())
+		return "", err
+	}
+
 	request := &oss.PutObjectRequest{
 		ObjectKey: objectName,
-		Reader:    strings.NewReader(strImage),
+		Reader:    strings.NewReader(string(byteImage)),
 	}
 	resp, err := bucket.DoPutObject(request, nil)
 	if err != nil {
