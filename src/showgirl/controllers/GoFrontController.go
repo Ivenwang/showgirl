@@ -982,43 +982,13 @@ func (this *GoFrontController) Pay_CreateTransaction() {
 			break
 		}
 		
-		//普通Public接口，取出并验证cookie
-		cookie := this.Ctx.Input.Header("UserKey")
-		//如果从userkey没找到cookie,就从cookie里拿
-		if len(cookie) == 0 {
-			TmpUserJson := this.Ctx.GetCookie("UserInfo")
-			if len(TmpUserJson) > 0 {
-				TmpUserInfo, _ := url.QueryUnescape(TmpUserJson)
-				stCookieUserInfo := &CookieUserInfo{}
-				err := json.Unmarshal([]byte(TmpUserInfo), stCookieUserInfo)
-				if err != nil {
-					utils.Warn(flowid, "Cookie.UserInfo_Unmarshal_error, method=CreateTransaction  UserInfo=%v, err=%s", TmpUserInfo, err.Error())
-				}
-				utils.Debug(flowid, "GoFront Request CreateTransaction debug, CookieUserInfo = %v, TmpUserInfo = %s", stCookieUserInfo, TmpUserInfo)
-				cookie = stCookieUserInfo.UserKey
-			}
+		//构造空cookie信息
+		TrustInfo := &client.STUserTrustInfo{
+			UserID: proto.String(""),
+			Url: proto.String(""),
+			Name: proto.String(""),
+			FlowId: proto.Int64(flowid),
 		}
-		
-		utils.Debug(flowid, "go front get cookie, cookie = %s", cookie)
-		//redis中取cookie对应的信息
-		TrustInfo, ret := getCookieData(this.Ctx.Request.URL.RequestURI(), cookie, flowid)
-		
-		if ret == 1 || ret == 2 {
-			utils.Warn(flowid, "Check_cookie_failed, cookie=%s, ret=%d", cookie, ret)
-			clientRspPB.RspHeader.ErrNo = client.EErrorTypeDef_CHECK_COOKIE_ERROR.Enum()
-			clientRspPB.RspHeader.ErrMsg = proto.String(utils.ERRMSG_CHECK_COOKIE_ERROR)
-			break
-		} else if ret == 3 {
-			utils.Warn(flowid, "getCookieData_from_redis_failed, cookie=%s, ret=%d", cookie, ret)
-			clientRspPB.RspHeader.ErrNo = client.EErrorTypeDef_SYS_INTERNAL_ERROR.Enum()
-			clientRspPB.RspHeader.ErrMsg = proto.String(utils.ERRMSG_SYSTEM_BUSY)
-			clientRspPB.RspHeader.ErrDetail = proto.String("getCookieData from redis failed")
-			break
-		}
-		
-		channel := this.Ctx.Input.Header("Channel")
-		utils.Debug(flowid, "stat_channel UserID = %s, Url = %s, NickName = %s", 
-			channel, TrustInfo.GetUserID(), TrustInfo.GetUrl(), TrustInfo.GetName())
 		
 		//打印请求json
 		utils.Debug(flowid, "Pay_CreateTransaction req json data = %s", body)

@@ -2,7 +2,7 @@ syntax = "proto2";
 package client;
 
 //创建微信支付订单请求
-message STCreateTransactionReq //Public
+message STCreateTransactionReq //Public|NoCookie
 {
     optional string GoodsDesc = 1; //商品描述,商品简单描述,该字段须严格按照规范传递,具体请见参数规定(https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=4_2)
     optional string GoodsDetail = 2; //商品详情
