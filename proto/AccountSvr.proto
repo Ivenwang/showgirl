@@ -19,6 +19,7 @@ message STThirdPartyWXLoginRsp
 	optional string WxOpenID = 7; //微信openid
 	optional sint64 VipDeadLine = 8; //vip过期时间
 	optional bool bVip = 9; //vip当前是否生效
+	optional bool PayControl = 10; //支付开关
 }
 
 

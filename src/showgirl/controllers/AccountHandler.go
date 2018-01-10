@@ -98,6 +98,7 @@ func HandleThirdPartyWXLogin(hdr *client.STUserTrustInfo, req *client.STThirdPar
 		stThirdPartyWXLoginRsp.WxOpenID = proto.String(WXOpenID)
 		stThirdPartyWXLoginRsp.VipDeadLine = proto.Int64(stUserBaseInfo.VipDeadline)
 		stThirdPartyWXLoginRsp.BVip = proto.Bool(false)
+		stThirdPartyWXLoginRsp.PayControl = proto.Bool(true)
 
 		if stUserBaseInfo.VipDeadline >= time.Now().Unix() {
 			stThirdPartyWXLoginRsp.BVip = proto.Bool(true)
