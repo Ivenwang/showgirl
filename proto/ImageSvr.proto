@@ -89,3 +89,15 @@ message STDeleteResourceRsp
 {
 }
 
+//编辑相册资源请求
+message STUpdateStyleReq //Public|NoCookie
+{
+    required sint32 StyleID = 1; //相册id
+    optional string StyleName = 2; //相册名称，如果不填则不修改
+    optional ERecommendTypeDef StyleType = 3; //相册类型，如果不填则不修改
+}
+
+//编辑相册资源响应
+message STUpdateStyleRsp
+{
+}

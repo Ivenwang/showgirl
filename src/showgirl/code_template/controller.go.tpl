@@ -38,6 +38,8 @@ func (this *{{$.module}}Controller) DoResponse(
 		}
 	}
 
+	this.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
+
 	commonRes := &{{$.pkg}}.CommonRsp{
 		UserTrustInfo: commonReq.UserTrustInfo,
 		RspHeader: rspHeader,

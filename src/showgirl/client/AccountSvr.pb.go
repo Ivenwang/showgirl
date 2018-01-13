@@ -36,6 +36,8 @@ It has these top-level messages:
 	STDeleteStyleRsp
 	STDeleteResourceReq
 	STDeleteResourceRsp
+	STUpdateStyleReq
+	STUpdateStyleRsp
 	STCreateTransactionReq
 	STCreateTransactionRsp
 	STImageListInfo

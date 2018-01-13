@@ -195,3 +195,28 @@ func HandleDeleteResource(hdr *client.STUserTrustInfo, req *client.STDeleteResou
 	return rspHeader, pDeleteResourceRsp
 
 }
+
+//auto generated.
+func HandleUpdateStyle(hdr *client.STUserTrustInfo, req *client.STUpdateStyleReq) (*client.STRspHeader, *client.STUpdateStyleRsp) {
+
+	rspHeader := &client.STRspHeader{
+		ErrNo:  client.EErrorTypeDef_RESULT_OK.Enum(),
+		ErrMsg: proto.String("success"),
+	}
+
+	for {
+
+		//编辑相册
+		err := Image.UpdateStyleInfo(req, hdr.GetFlowId())
+		if err != nil {
+			utils.Warn(hdr.GetFlowId(), "HandleUpdateStyle UpdateStyleInfo error, req = %s, err = %s", req.String(), err.Error())
+			rspHeader.ErrNo = client.EErrorTypeDef_SYS_INTERNAL_ERROR.Enum()
+			rspHeader.ErrMsg = proto.String("系统繁忙，请稍候重试")
+			break
+		}
+		break
+	}
+
+	return rspHeader, nil
+
+}

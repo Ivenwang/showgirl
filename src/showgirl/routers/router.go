@@ -35,6 +35,8 @@ func init() {
 		
 			beego.Router("/image/deleteresource", &controllers.ImageController{}, "post:DeleteResource")
 		
+			beego.Router("/image/updatestyle", &controllers.ImageController{}, "post:UpdateStyle")
+		
 		case "Pay":
 			beego.Router("/pay/createtransaction", &controllers.PayController{}, "post:CreateTransaction")
 		
@@ -61,6 +63,8 @@ func init() {
 		
 			beego.Router("/v1.0/image/deleteresource", &controllers.GoFrontController{}, "post:Image_DeleteResource")
 		
+			beego.Router("/v1.0/image/updatestyle", &controllers.GoFrontController{}, "post:Image_UpdateStyle")
+		
 			beego.Router("/v1.0/pay/createtransaction", &controllers.GoFrontController{}, "post:Pay_CreateTransaction")
 		
 			beego.Router("/v1.0/recommend/queryrecommendlist", &controllers.GoFrontController{}, "post:Recommend_QueryRecommendList")
@@ -84,6 +88,8 @@ func init() {
 			beego.Router("/op/image/deletestyle", &controllers.OpGatewayController{}, "post:Image_DeleteStyle")
 		
 			beego.Router("/op/image/deleteresource", &controllers.OpGatewayController{}, "post:Image_DeleteResource")
+		
+			beego.Router("/op/image/updatestyle", &controllers.OpGatewayController{}, "post:Image_UpdateStyle")
 		
 			beego.Router("/op/pay/createtransaction", &controllers.OpGatewayController{}, "post:Pay_CreateTransaction")
 		

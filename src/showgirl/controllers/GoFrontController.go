@@ -945,6 +945,116 @@ func (this *GoFrontController) Image_DeleteResource() {
 	}
 }
 
+func (this *GoFrontController) Image_UpdateStyle() {
+	jsonMarshaler := &jsonpb.Marshaler{
+		EnumsAsInts: true,  //整数是否整形显示		
+		EmitDefaults: true, //是否显示值为0的字段		
+		OrigName: false,    //是否显示proto名字
+	}
+
+	clientRspPB := &client.CommonClientRsp {
+		RspHeader: &client.STRspHeader {
+			ErrNo:  client.EErrorTypeDef_RESULT_OK.Enum(),
+			ErrMsg: proto.String("success"),
+		},
+		RspJson: nil,
+	}
+	FlowIdHeader, _ := strconv.ParseInt(this.Ctx.Input.Header("FlowId"), 10, 64)
+	if FlowIdHeader == 0 {
+		FlowIdHeader = int64(G_FlowRand.Int31())
+	}
+	flowid := int64(FlowIdHeader)
+	
+	defer func() {
+		this.DoResponse(jsonMarshaler, clientRspPB, FlowIdHeader)
+	}()
+
+	for {
+		body := this.Ctx.Input.RequestBody
+		bodyLen := len(body)
+		utils.Debug(flowid, "GoFront Request UpdateStyle bodyLen: %d", bodyLen)
+		if bodyLen == 0 {
+			utils.Warn(flowid, "GoFrontController post check failed, body is empty")
+			clientRspPB.RspHeader.ErrNo = client.EErrorTypeDef_CHECK_CONTENT_ERROR.Enum()
+			clientRspPB.RspHeader.ErrMsg = proto.String(utils.ERRMSG_CLIENT_EXCEPTION)
+			break
+		}
+		
+		//构造空cookie信息
+		TrustInfo := &client.STUserTrustInfo{
+			UserID: proto.String(""),
+			Url: proto.String(""),
+			Name: proto.String(""),
+			FlowId: proto.Int64(flowid),
+		}
+		
+		//打印请求json
+		utils.Debug(flowid, "Image_UpdateStyle req json data = %s", body)
+		
+		//JSON转PB
+		reqPB := &client.STUpdateStyleReq{}
+		err := jsonpb.UnmarshalString(string(body[:len(body)]), reqPB)
+		if err != nil {
+			errStr := fmt.Sprintf("parse body to STUpdateStyleReq failed, err:%s", err)
+			utils.Warn(flowid, "%s", errStr)
+			//example:unknown field "AdditionalReq" in STQueryUserAttrReq
+			//if !(strings.HasPrefix(err.Error(), "unknown field") && 
+			//	strings.HasSuffix(err.Error(), "in client.STUpdateStyleReq")) {
+			if !(strings.HasPrefix(err.Error(), "unknown field")) {
+				clientRspPB.RspHeader.ErrNo = client.EErrorTypeDef_CHECK_CONTENT_ERROR.Enum()
+				clientRspPB.RspHeader.ErrMsg = proto.String(utils.ERRMSG_CLIENT_EXCEPTION)
+				clientRspPB.RspHeader.ErrDetail = proto.String(errStr)
+				break
+			}
+		}
+
+		//设置httpheader
+		header := make(map[string]string)
+		header["FlowId"] = this.Ctx.Input.Header("FlowId")
+		
+		utils.Debug(int64(FlowIdHeader), "GoFront Transmit UpdateStyle TrustInfo: %s | reqPB: %s | reqJson: %s", 
+			TrustInfo.String(), reqPB.String(), body)
+		
+		TrustInfo.RealIP = proto.String(this.Ctx.Input.Header("x-real-ip"))
+
+		c :=  client.ImageClient{}
+		rspHdr, rspBody, err := c.UpdateStyle(TrustInfo, reqPB, header)
+		if err != nil {
+			if strings.HasPrefix(err.Error(), client.RPC_UNMARSHAL_ABNORMAL_PREFIX) ||
+			 	strings.HasPrefix(err.Error(), client.RPC_MARSHAL_ABNORMAL_PREFIX) {
+				clientRspPB.RspHeader.ErrNo = client.EErrorTypeDef_RPC_INTERFACE_ABNORMAL.Enum()
+				clientRspPB.RspHeader.ErrMsg = proto.String(utils.ERRMSG_EXCEPTION_CATCHED)
+			} else {
+				clientRspPB.RspHeader.ErrNo = client.EErrorTypeDef_RPC_FAILED_ERROR.Enum()
+				clientRspPB.RspHeader.ErrMsg = proto.String(utils.ERRMSG_SYSTEM_BUSY)
+			}
+			errStr := fmt.Sprintf("rpc UpdateStyle failed, err:%s", err)
+			utils.Warn(flowid, "%s", errStr)
+			clientRspPB.RspHeader.ErrDetail = proto.String(errStr)
+			break
+		}
+
+		//rspBody转json
+		rspBodyJson, err := jsonMarshaler.MarshalToString(rspBody)
+		if err != nil {
+			errStr := fmt.Sprintf("pb2json failed, err:%s", err)
+			utils.Warn(flowid, "%s", errStr)
+			clientRspPB.RspHeader.ErrNo = client.EErrorTypeDef_GENERATE_CONTENT_ERROR.Enum()
+			clientRspPB.RspHeader.ErrMsg = proto.String(utils.ERRMSG_EXCEPTION_CATCHED)
+			clientRspPB.RspHeader.ErrDetail = proto.String(errStr)
+			break
+		}
+
+		//转json
+		clientRspPB.RspJson = &rspBodyJson
+		clientRspPB.RspHeader = rspHdr
+		
+		utils.Debug(int64(FlowIdHeader), "GoFront Transmit rsp UpdateStyle header:%s | rspPB:%s", rspHdr.String(), rspBodyJson)
+		
+		break
+	}
+}
+
 
 
 func (this *GoFrontController) Pay_CreateTransaction() {

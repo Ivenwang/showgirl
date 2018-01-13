@@ -38,6 +38,8 @@ func (this *AccountController) DoResponse(
 		}
 	}
 
+	this.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
+
 	commonRes := &client.CommonRsp{
 		UserTrustInfo: commonReq.UserTrustInfo,
 		RspHeader: rspHeader,

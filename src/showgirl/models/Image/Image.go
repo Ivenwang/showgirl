@@ -6,6 +6,7 @@ import (
 	"showgirl/client"
 	"showgirl/models/mysql"
 	"showgirl/models/utils"
+	"strconv"
 	"strings"
 	"time"
 
@@ -221,4 +222,35 @@ func UploadImage(strImage string, flowid int64) (string, error) {
 	defer resp.Body.Close()
 
 	return "https://girlstyle.oss-cn-shanghai.aliyuncs.com/" + objectName, nil
+}
+
+//UpdateStyleInfo 更新相册信息
+func UpdateStyleInfo(req *client.STUpdateStyleReq, flowid int64) error {
+
+	if req.GetStyleID() <= 0 ||
+		(req.StyleName == nil && req.StyleType == nil) {
+		return nil
+	}
+
+	//新建mysql实例
+	o := mysql.NewShowgirlOrm()
+
+	sSQL := "update StyleShowInfo set"
+
+	if req.StyleName != nil {
+		sSQL += " ShowName = \"" + req.GetStyleName() + "\","
+	}
+	if req.StyleType != nil {
+		sSQL += " RecommendCategory = " + strconv.FormatInt(int64(req.GetStyleType()), 10) + ","
+	}
+	sSQL = sSQL[:len(sSQL)-1]
+	sSQL += " where Id = " + strconv.FormatInt(int64(req.GetStyleID()), 10)
+
+	_, err := o.Raw(sSQL).Exec()
+	if err != nil {
+		utils.Warn(flowid, "UpdateStyleInfo error, sql = %s, err = %s", sSQL, err.Error())
+		return err
+	}
+
+	return nil
 }

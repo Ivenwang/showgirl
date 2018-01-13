@@ -146,3 +146,9 @@ func init() {
 	}
 
 }
+
+func (this *GoFront2Controller) Options() {
+	this.Ctx.ResponseWriter.WriteHeader(202)
+
+	//this.ServeJSON()
+}

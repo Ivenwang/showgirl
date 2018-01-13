@@ -314,6 +314,25 @@ func (this *OpGatewayController) Image_DeleteResource() {
 	this.fillResponce("DeleteResource", clientRspPB, rspHdr, rspBody, err, flowid)
 }
 
+func (this *OpGatewayController) Image_UpdateStyle() {
+	clientRspPB := newOpGatewayRsp()
+	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))
+	flowid := int64(tmp)	
+	defer func() {
+		if err := recover(); err != nil {
+			handlePanic("UpdateStyle", clientRspPB, err, flowid)
+		}
+		this.DoResponse(clientRspPB, flowid)
+	}()
+	
+	reqPB := &client.STUpdateStyleReq{}
+	userTrustInfo := this.parseRequest("UpdateStyle", clientRspPB, reqPB, &flowid)
+	
+	c := client.ImageClient{}
+	rspHdr, rspBody, err := c.UpdateStyle(userTrustInfo, reqPB, make(map[string]string))
+	this.fillResponce("UpdateStyle", clientRspPB, rspHdr, rspBody, err, flowid)
+}
+
 func (this *OpGatewayController) Pay_CreateTransaction() {
 	clientRspPB := newOpGatewayRsp()
 	tmp, _ := strconv.Atoi(this.Ctx.Input.Header("FlowId"))

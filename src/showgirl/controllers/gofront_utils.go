@@ -102,6 +102,7 @@ func (this *GoFrontController) DoResponse(jsonMarshaler *jsonpb.Marshaler, clien
 	//返回json字符串
 	this.Ctx.Output.Header("FlowId", strconv.FormatInt(FlowIdHeader, 10))
 	this.Ctx.Output.Header("Errno", fmt.Sprintf("%d", clientRspPB.RspHeader.GetErrNo()))
+	this.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
 	this.Ctx.WriteString(clientRspJson)
 	return
 }
