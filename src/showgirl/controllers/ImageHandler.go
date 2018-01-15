@@ -119,7 +119,7 @@ func HandleUploadImage(hdr *client.STUserTrustInfo, req *client.STUploadImageReq
 	for {
 
 		//上传并设置相册图片
-		err := Image.UploadAndSetImage(req.GetImage(), req.GetStyleID(), hdr.GetFlowId())
+		err := Image.UploadAndSetImage(req.GetImage(), req.GetStyleID(), req.GetImageSource(), hdr.GetFlowId())
 		if err != nil {
 			utils.Warn(hdr.GetFlowId(), "HandleUploadImage UploadAndSetImage error, req = %s, err = %s", req.String(), err.Error())
 			rspHeader.ErrNo = client.EErrorTypeDef_SYS_INTERNAL_ERROR.Enum()

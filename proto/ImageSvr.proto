@@ -60,6 +60,7 @@ message STUploadImageReq //Public|NoCookie
 {
     optional sint32 StyleID = 1; //相册id
 	optional string Image = 2; //图片base64编码
+    optional bytes ImageSource = 3; //图片原始数据
 }
 
 //上传图片请求

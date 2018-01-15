@@ -2,6 +2,7 @@ package Image
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"showgirl/client"
 	"showgirl/models/mysql"
@@ -28,7 +29,7 @@ func QueryStyleInfoList(QueryBegin int32, QueryNum int32, flowid int64) ([]*clie
 	var DBRecommendCategory []int32
 	var DBCreateTime []int64
 
-	sSQL := "select Id,ShowName,RecommendCategory,CreateTime from StyleShowInfo order by RecommendCategory asc,CreateTime desc"
+	sSQL := fmt.Sprintf("select Id,ShowName,RecommendCategory,CreateTime from StyleShowInfo order by RecommendCategory asc,CreateTime desc limit %d, %d", QueryBegin, QueryNum)
 
 	num, err := o.Raw(sSQL).QueryRows(&DBID, &DBShowName, &DBRecommendCategory, &DBCreateTime)
 	if err != nil {
@@ -164,9 +165,9 @@ func DeleteResource(ResourceID int32, flowid int64) error {
 }
 
 //UploadAndSetImage 上传并设置图片资源
-func UploadAndSetImage(strImage string, StyleID int32, flowid int64) error {
+func UploadAndSetImage(strImage string, StyleID int32, imageSource []byte, flowid int64) error {
 
-	imageURL, err := UploadImage(strImage, flowid)
+	imageURL, err := UploadImage(strImage, imageSource, flowid)
 	if err != nil {
 		utils.Warn(flowid, "UploadAndSetImage UploadImage error, strImage = %s, err = %s", strImage, err.Error())
 		return err
@@ -187,8 +188,11 @@ func UploadAndSetImage(strImage string, StyleID int32, flowid int64) error {
 }
 
 //UploadImage 上传图片
-func UploadImage(strImage string, flowid int64) (string, error) {
+func UploadImage(strImage string, imageSource []byte, flowid int64) (string, error) {
 
+	if len(strImage) <= 0 && len(imageSource) <= 0 {
+		return "", errors.New("check params error")
+	}
 	client, err := oss.New("https://oss-cn-shanghai.aliyuncs.com", OSS_APP_KEY, OSS_SECRET_KEY)
 	if err != nil {
 		utils.Warn(flowid, "UploadImage new oss error, err = %s", err.Error())
@@ -203,11 +207,15 @@ func UploadImage(strImage string, flowid int64) (string, error) {
 
 	objectName := string(utils.Krand(16, utils.KC_RAND_KIND_ALL))
 
+	byteImage := imageSource
 	//图片解base64
-	byteImage, err := base64.StdEncoding.DecodeString(strImage)
-	if err != nil {
-		utils.Warn(flowid, "UploadImage image base64 decode error, err = %s", err.Error())
-		return "", err
+	if len(strImage) > 0 {
+		byteImage, err = base64.StdEncoding.DecodeString(strImage)
+		if err != nil {
+			//如果解析失败，则不解析了
+			utils.Warn(flowid, "UploadImage image base64 decode error, err = %s", err.Error())
+			return "", err
+		}
 	}
 
 	request := &oss.PutObjectRequest{
